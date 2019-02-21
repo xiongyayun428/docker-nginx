@@ -87,9 +87,9 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& rm nginx.tar.gz \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
     && curl -fSL https://codeload.github.com/yaoweibin/nginx_upstream_check_module/zip/master -o nginx_upstream_check_module.zip \
-	&& unzip nginx_upstream_check_module.zip \
-	&& rm nginx_upstream_check_module.zip \
-	&& patch -p1 < ./nginx_upstream_check_module-master/check_1.14.0+.patch \
+	&& unzip /usr/src/nginx-$NGINX_VERSION/nginx_upstream_check_module.zip \
+	&& rm /usr/src/nginx-$NGINX_VERSION/nginx_upstream_check_module.zip \
+	&& patch -p1 < /usr/src/nginx-$NGINX_VERSION/nginx_upstream_check_module-master/check_1.14.0+.patch \
 	&& ./configure $CONFIG --with-debug \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
 	&& mv objs/nginx objs/nginx-debug \

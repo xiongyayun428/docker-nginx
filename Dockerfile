@@ -66,6 +66,9 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		libxslt-dev \
 		gd-dev \
 		geoip-dev \
+    && curl -fSL https://codeload.github.com/yaoweibin/nginx_upstream_check_module/zip/master -o /usr/local/src/nginx_upstream_check_module.zip \
+	&& unzip /usr/local/src/nginx_upstream_check_module.zip \
+	&& rm /usr/local/src/nginx_upstream_check_module.zip \
 	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz -o nginx.tar.gz \
 	&& curl -fSL https://nginx.org/download/nginx-$NGINX_VERSION.tar.gz.asc  -o nginx.tar.gz.asc \
 	&& export GNUPGHOME="$(mktemp -d)" \
@@ -86,10 +89,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& tar -zxC /usr/src -f nginx.tar.gz \
 	&& rm nginx.tar.gz \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
-        && curl -fSL https://codeload.github.com/yaoweibin/nginx_upstream_check_module/zip/master -o /usr/src/nginx-$NGINX_VERSION/nginx_upstream_check_module.zip \
-	&& unzip /usr/src/nginx-$NGINX_VERSION/nginx_upstream_check_module.zip \
-	&& rm /usr/src/nginx-$NGINX_VERSION/nginx_upstream_check_module.zip \
-	&& patch -p1 < /usr/src/nginx-$NGINX_VERSION/nginx_upstream_check_module-master/check_1.14.0+.patch \
+	&& patch -p1 < /usr/local/src/nginx_upstream_check_module-master/check_1.14.0+.patch \
 	&& ./configure $CONFIG --with-debug \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
 	&& mv objs/nginx objs/nginx-debug \

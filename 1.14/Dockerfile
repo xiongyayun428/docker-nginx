@@ -145,6 +145,21 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
 
+#****************** 安装gclib ；解决时区问题 ***********************
+#RUN在镜像中运行命令，必须是基础镜像识别的命令
+#Java是基于GUN Standard C library(glibc)，Alpine是基于MUSL libc(mini libc)  ，需要安装gclib库
+#截止到目前最稳定的版本是2.28
+
+RUN apk --no-cache add ca-certificates wget && \
+    wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
+    wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.28-r0/glibc-2.28-r0.apk && \
+    apk add glibc-2.28-r0.apk && \
+#解决时区错乱的问题*******************************************************    
+    apk update && \
+    apk add --no-cache ca-certificates && \
+    apk add --no-cache curl bash tree tzdata && \
+    cp -rf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+
 # EXPOSE 80
 
 STOPSIGNAL SIGTERM

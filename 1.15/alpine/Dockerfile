@@ -2,7 +2,7 @@ FROM alpine:3.9
 
 LABEL maintainer="熊亚运 <xiongyayun428@163.com>"
 
-ENV NGINX_VERSION 1.14.2
+ENV NGINX_VERSION 1.15.9
 
 RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& CONFIG="\
@@ -49,7 +49,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 		--with-compat \
 		--with-file-aio \
 		--with-http_v2_module \
-        --add-module=/usr/src/nginx_upstream_check_module-master \
 	" \
 	&& addgroup -S nginx \
 	&& adduser -D -S -h /var/cache/nginx -s /sbin/nologin -G nginx nginx \
@@ -85,11 +84,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& mkdir -p /usr/src \
 	&& tar -zxC /usr/src -f nginx.tar.gz \
 	&& rm nginx.tar.gz \
-    && curl -fSL https://github.com/yaoweibin/nginx_upstream_check_module/archive/master.tar.gz -o /usr/src/nginx_upstream_check_module-master.tar.gz \
-    && tar -zxC /usr/src/ -f /usr/src/nginx_upstream_check_module-master.tar.gz \
-	&& rm /usr/src/nginx_upstream_check_module-master.tar.gz \
 	&& cd /usr/src/nginx-$NGINX_VERSION \
-	&& patch -p1 < /usr/src/nginx_upstream_check_module-master/check_1.14.0+.patch \
 	&& ./configure $CONFIG --with-debug \
 	&& make -j$(getconf _NPROCESSORS_ONLN) \
 	&& mv objs/nginx objs/nginx-debug \
@@ -102,7 +97,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 	&& make install \
 	&& rm -rf /etc/nginx/html/ \
 	&& mkdir /etc/nginx/conf.d/ \
-	&& mkdir -p /usr/local/nginx/temp/ \
 	&& mkdir -p /usr/share/nginx/html/ \
 	&& install -m644 html/index.html /usr/share/nginx/html/ \
 	&& install -m644 html/50x.html /usr/share/nginx/html/ \

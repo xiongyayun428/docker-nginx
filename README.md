@@ -1,4 +1,5 @@
-# nginx
+# docker-nginx
+nginx
 
 ## alpine中缺少FontConfiguration，安装ttf-dejavu
 
